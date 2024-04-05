@@ -25,7 +25,7 @@ export function Game() {
 
   const handleCellClick = (index: number) => () => {
     store.dispatch({
-      type: "game/move-completed",
+      type: "event/game/move-completed",
       payload: {
         index,
         symbol: GameSymbol.CROSS,

@@ -21,7 +21,7 @@ const initialState: GameState = {
 
 const gameReducer = (state = initialState, action: ModelEvents): GameState => {
   switch (action.type) {
-    case "game/move-completed": {
+    case "event/game/move-completed": {
       return {
         ...state,
         gameField: updateGameCell(
