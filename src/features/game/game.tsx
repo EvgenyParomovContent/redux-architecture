@@ -7,13 +7,32 @@ import { GameMoveInfo } from "./ui/game-move-info";
 import { GameTitle } from "./ui/game-title";
 import { PlayerInfo } from "./ui/player-info";
 import { GameSymbol } from "./domain/game-symbol";
-import { DEFAULT_GAME_FIELD_SIZE } from "./domain/game-field";
+import { useEffect, useState } from "react";
+import { selectGameField, store } from "./store";
 
 const PLAYERS_COUNT = 4;
 
-const cells = new Array(DEFAULT_GAME_FIELD_SIZE * DEFAULT_GAME_FIELD_SIZE).fill(null);
-
 export function Game() {
+  const [gameState, setGameState] = useState(() => store.getState());
+
+  useEffect(() => {
+    return store.subscribe(() => {
+      setGameState(store.getState());
+    });
+  }, []);
+
+  const gameField = selectGameField(gameState);
+
+  const handleCellClick = (index: number) => () => {
+    store.dispatch({
+      type: "game/update-cell",
+      payload: {
+        index,
+        symbol: GameSymbol.CROSS,
+      },
+    });
+  };
+
   return (
     <>
       <GameLayout
@@ -35,15 +54,18 @@ export function Game() {
           );
         })}
         gameMoveInfo={
-          <GameMoveInfo currentMove={GameSymbol.CROSS} nextMove={GameSymbol.SQUARE} />
+          <GameMoveInfo
+            currentMove={GameSymbol.CROSS}
+            nextMove={GameSymbol.SQUARE}
+          />
         }
-        gameCells={cells.map((cell, index) => (
+        gameCells={gameField.map((cell, index) => (
           <GameCell
             key={index}
             index={index}
             isWinner={false}
             disabled={false}
-            onClick={() => { }}
+            onClick={handleCellClick(index)}
             symbol={cell}
           />
         ))}
