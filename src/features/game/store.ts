@@ -15,15 +15,15 @@ type GameState = {
 
 // Actions
 
-type UpdateCellAction = {
-  type: "game/update-cell";
+type MoveCompletedAction = {
+  type: "game/move-completed";
   payload: {
     index: number;
     symbol: GameSymbol;
   };
 };
 
-type GameAction = UpdateCellAction;
+type GameAction = MoveCompletedAction;
 
 // Reducer
 
@@ -33,7 +33,7 @@ const initialState: GameState = {
 
 const gameReducer = (state = initialState, action: GameAction): GameState => {
   switch (action.type) {
-    case "game/update-cell": {
+    case "game/move-completed": {
       return {
         ...state,
         gameField: updateGameCell(
