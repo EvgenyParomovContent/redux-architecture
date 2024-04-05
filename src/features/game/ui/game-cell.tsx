@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { GameSymbolView } from "./game-symbol";
 import { memo } from "react";
-import { GameSymbol } from "../domain/game-symbol";
+import { GameSymbol } from "../model/domain/game-symbol";
 
 export const GameCell = memo(function GameCell({
   onClick,

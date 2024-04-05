@@ -6,7 +6,7 @@ import { GameLayout } from "./ui/game-layout";
 import { GameMoveInfo } from "./ui/game-move-info";
 import { GameTitle } from "./ui/game-title";
 import { PlayerInfo } from "./ui/player-info";
-import { GameSymbol } from "./domain/game-symbol";
+import { GameSymbol } from "./model/domain/game-symbol";
 import { useEffect, useState } from "react";
 import { selectGameField, store } from "./store";
 

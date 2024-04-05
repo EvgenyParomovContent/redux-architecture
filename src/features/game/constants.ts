@@ -1,4 +1,4 @@
-import { GameSymbol } from "./domain/game-symbol";
+import { GameSymbol } from "./model/domain/game-symbol";
 import avatarSrc1 from "./ui/images/avatar-1.png";
 import avatarSrc2 from "./ui/images/avatar-2.png";
 import avatarSrc3 from "./ui/images/avatar-3.png";

@@ -1,6 +1,6 @@
 import { GameSymbolView } from "./game-symbol";
 import clsx from "clsx";
-import { GameSymbol } from "../domain/game-symbol";
+import { GameSymbol } from "../model/domain/game-symbol";
 import { useNow } from "@/shared/lib/timers";
 
 export function PlayerInfo({

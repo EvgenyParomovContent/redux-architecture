@@ -1,4 +1,4 @@
-import { GameSymbol } from "../domain/game-symbol";
+import { GameSymbol } from "../model/domain/game-symbol";
 import { GameSymbolView } from "./game-symbol";
 
 export function GameMoveInfo({

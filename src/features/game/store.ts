@@ -3,8 +3,8 @@ import {
   createEmptyGameField,
   GameField,
   updateGameCell,
-} from "./domain/game-field";
-import { GameSymbol } from "./domain/game-symbol";
+} from "./model/domain/game-field";
+import { GameSymbol } from "./model/domain/game-symbol";
 
 import { composeWithDevTools } from "@redux-devtools/extension";
 

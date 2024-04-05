@@ -1,4 +1,4 @@
-import { GameSymbol } from "../domain/game-symbol";
+import { GameSymbol } from "../model/domain/game-symbol";
 import { CrossIcon } from "./icons/cross-icon";
 import { SquareIcon } from "./icons/square-icon";
 import { TringleIcon } from "./icons/tringle-icon";
