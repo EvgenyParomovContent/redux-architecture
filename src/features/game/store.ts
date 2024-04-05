@@ -4,26 +4,14 @@ import {
   GameField,
   updateGameCell,
 } from "./model/domain/game-field";
-import { GameSymbol } from "./model/domain/game-symbol";
 
 import { composeWithDevTools } from "@redux-devtools/extension";
+import { ModelEvents } from "./model/events";
 
 // State
 type GameState = {
   gameField: GameField;
 };
-
-// Actions
-
-type MoveCompletedAction = {
-  type: "game/move-completed";
-  payload: {
-    index: number;
-    symbol: GameSymbol;
-  };
-};
-
-type GameAction = MoveCompletedAction;
 
 // Reducer
 
@@ -31,7 +19,7 @@ const initialState: GameState = {
   gameField: createEmptyGameField(),
 };
 
-const gameReducer = (state = initialState, action: GameAction): GameState => {
+const gameReducer = (state = initialState, action: ModelEvents): GameState => {
   switch (action.type) {
     case "game/move-completed": {
       return {
