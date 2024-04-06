@@ -9,8 +9,7 @@ import { PlayerInfo } from "./ui/player-info";
 import { GameSymbol } from "./model/domain/game-symbol";
 import { useEffect, useState } from "react";
 import { selectGameField, selectGameStatus, store } from "./store";
-import { updateGameCell } from "./model/domain/game-field";
-import { getNextGameStatus } from "./model/domain/game-status";
+import { GameWinnerInfo } from "./ui/game-winner-info";
 
 const PLAYERS_COUNT = 4;
 
@@ -26,19 +25,7 @@ export function Game() {
   const gameField = selectGameField(gameState);
   const gameStatus = selectGameStatus(gameState);
 
-  const handleCellClick = (index: number) => () => {
-    store.dispatch({
-      type: "event/game/move-completed",
-      payload: {
-        gameField: updateGameCell(gameField, index, gameStatus.symbol),
-        gameStatus: getNextGameStatus(gameStatus, [
-          GameSymbol.CROSS,
-          GameSymbol.ZERO,
-          GameSymbol.TRINGLE,
-        ]),
-      },
-    });
-  };
+  const handleCellClick = (index: number) => () => {};
 
   return (
     <>
@@ -61,10 +48,14 @@ export function Game() {
           );
         })}
         gameMoveInfo={
-          <GameMoveInfo
-            currentMove={gameStatus.symbol}
-            nextMove={GameSymbol.SQUARE}
-          />
+          gameStatus.type === "in-progress" ? (
+            <GameMoveInfo
+              currentMove={gameStatus.symbol}
+              nextMove={GameSymbol.SQUARE}
+            />
+          ) : (
+            <GameWinnerInfo winner={gameStatus.winner} />
+          )
         }
         gameCells={gameField.map((cell, index) => (
           <GameCell

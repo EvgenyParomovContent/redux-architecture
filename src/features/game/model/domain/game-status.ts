@@ -1,8 +1,17 @@
 import { GameSymbol } from "./game-symbol";
 
-export type GameStatus = {
+export type GameStatusInProgress = {
+  type: "in-progress";
   symbol: GameSymbol;
 };
+
+export type GameStatusGameOver = {
+  type: "game-over";
+  winner: GameSymbol;
+  winnerIndexes: number[];
+};
+
+export type GameStatus = GameStatusInProgress | GameStatusGameOver;
 
 export const MOVE_ORDER = [
   GameSymbol.CROSS,
@@ -11,8 +20,8 @@ export const MOVE_ORDER = [
   GameSymbol.SQUARE,
 ] as const;
 
-export function getNextGameStatus(
-  { symbol }: GameStatus,
+export function getNextGameSymbol(
+  symbol: GameSymbol,
   symbolsInGame: readonly GameSymbol[] = MOVE_ORDER,
 ) {
   const symbols = symbolsInGame.length;
@@ -22,11 +31,10 @@ export function getNextGameStatus(
     ).indexOf(symbol) + 1;
   const newGameSymbol = MOVE_ORDER[nextIndex % symbols];
 
-  return {
-    symbol: newGameSymbol,
-  };
+  return newGameSymbol;
 }
 
 export const getInitialGameStatus = (): GameStatus => ({
+  type: "in-progress",
   symbol: GameSymbol.CROSS,
 });
