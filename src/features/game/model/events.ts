@@ -1,12 +1,22 @@
 import { GameField } from "./domain/game-field";
-import { GameStatus } from "./domain/game-status";
+import { GameStatusGameOver, GameStatusInProgress } from "./domain/game-status";
 
 type MoveCompletedEvent = {
   type: "event/game/move-completed";
   payload: {
     gameField: GameField;
-    gameStatus: GameStatus;
+    gameStatus: GameStatusInProgress;
   };
 };
 
-export type ModelEvents = MoveCompletedEvent;
+type GameOverEvent = {
+  type: "event/game/over";
+  payload: {
+    gameField: GameField;
+    gameStatus: GameStatusGameOver;
+  };
+};
+
+export type ModelEvents = MoveCompletedEvent | GameOverEvent;
+
+export type ModelDispatch = (event: ModelEvents) => void;

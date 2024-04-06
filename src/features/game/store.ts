@@ -20,6 +20,7 @@ const initialState: GameState = {
 
 const gameReducer = (state = initialState, action: ModelEvents): GameState => {
   switch (action.type) {
+    case "event/game/over":
     case "event/game/move-completed": {
       return {
         ...state,

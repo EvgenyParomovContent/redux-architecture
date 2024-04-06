@@ -10,6 +10,7 @@ import { GameSymbol } from "./model/domain/game-symbol";
 import { useEffect, useState } from "react";
 import { selectGameField, selectGameStatus, store } from "./store";
 import { GameWinnerInfo } from "./ui/game-winner-info";
+import { gameMove } from "./model/use-cases/game-move";
 
 const PLAYERS_COUNT = 4;
 
@@ -25,7 +26,7 @@ export function Game() {
   const gameField = selectGameField(gameState);
   const gameStatus = selectGameStatus(gameState);
 
-  const handleCellClick = (index: number) => () => {};
+  const handleCellClick = (index: number) => () => gameMove(index, store);
 
   return (
     <>
