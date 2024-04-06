@@ -6,11 +6,13 @@ import { GameLayout } from "./ui/game-layout";
 import { GameMoveInfo } from "./ui/game-move-info";
 import { GameTitle } from "./ui/game-title";
 import { PlayerInfo } from "./ui/player-info";
-import { GameSymbol } from "./model/domain/game-symbol";
 import { useEffect, useState } from "react";
 import { selectGameField, selectGameStatus, store } from "./store";
 import { GameWinnerInfo } from "./ui/game-winner-info";
 import { gameMove } from "./model/use-cases/game-move";
+import { selectGameCells } from "./model/selectors/game-cells";
+import { selectGameMoveInfo } from "./model/selectors/game-move-info";
+import { selectGameWinnerInfo } from "./model/selectors/game-winner-info";
 
 const PLAYERS_COUNT = 4;
 
@@ -25,6 +27,10 @@ export function Game() {
 
   const gameField = selectGameField(gameState);
   const gameStatus = selectGameStatus(gameState);
+
+  const gameCells = selectGameCells(gameField, gameStatus);
+  const gameMoveInfo = selectGameMoveInfo(gameStatus);
+  const gameWinnerInfo = selectGameWinnerInfo(gameStatus);
 
   const handleCellClick = (index: number) => () => gameMove(index, store);
 
@@ -49,23 +55,19 @@ export function Game() {
           );
         })}
         gameMoveInfo={
-          gameStatus.type === "in-progress" ? (
-            <GameMoveInfo
-              currentSymbol={gameStatus.symbol}
-              nextSymbol={GameSymbol.CROSS}
-            />
-          ) : (
-            <GameWinnerInfo winner={gameStatus.winner} />
-          )
+          <>
+            {gameMoveInfo && <GameMoveInfo {...gameMoveInfo} />}
+            {gameWinnerInfo && <GameWinnerInfo {...gameWinnerInfo} />}
+          </>
         }
-        gameCells={gameField.map((cell, index) => (
+        gameCells={gameCells.map((cell, index) => (
           <GameCell
             key={index}
             index={index}
-            isWinner={false}
+            isWinner={cell.isWinner}
             disabled={false}
             onClick={handleCellClick(index)}
-            symbol={cell}
+            symbol={cell.symbol}
           />
         ))}
       />
