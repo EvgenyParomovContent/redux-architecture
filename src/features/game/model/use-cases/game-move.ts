@@ -4,23 +4,23 @@ import {
   getFieldCell,
   updateGameCell,
 } from "../domain/game-field";
+import { currentIndexIsLast, GameHistory } from "../domain/game-history";
 import { GameStatus, getNextGameSymbol } from "../domain/game-status";
 import { ModelDispatch } from "../events";
 
 export function gameMove(
   index: number,
-  {
-    dispatch,
-    getState,
-  }: {
-    dispatch: ModelDispatch;
-    getState: () => {
-      gameField: GameField;
-      gameStatus: GameStatus;
-    };
+  dispatch: ModelDispatch,
+  state: {
+    history: GameHistory;
+    gameField: GameField;
+    gameStatus: GameStatus;
   },
 ) {
-  const state = getState();
+  if (!currentIndexIsLast(state.history)) {
+    return;
+  }
+
   if (state.gameStatus.type === "game-over") {
     return;
   }
