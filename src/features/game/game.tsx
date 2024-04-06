@@ -51,8 +51,8 @@ export function Game() {
         gameMoveInfo={
           gameStatus.type === "in-progress" ? (
             <GameMoveInfo
-              currentMove={gameStatus.symbol}
-              nextMove={GameSymbol.SQUARE}
+              currentSymbol={gameStatus.symbol}
+              nextSymbol={GameSymbol.CROSS}
             />
           ) : (
             <GameWinnerInfo winner={gameStatus.winner} />
