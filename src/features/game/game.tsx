@@ -8,7 +8,9 @@ import { GameTitle } from "./ui/game-title";
 import { PlayerInfo } from "./ui/player-info";
 import { GameSymbol } from "./model/domain/game-symbol";
 import { useEffect, useState } from "react";
-import { selectGameField, store } from "./store";
+import { selectGameField, selectGameStatus, store } from "./store";
+import { updateGameCell } from "./model/domain/game-field";
+import { getNextGameStatus } from "./model/domain/game-status";
 
 const PLAYERS_COUNT = 4;
 
@@ -22,13 +24,18 @@ export function Game() {
   }, []);
 
   const gameField = selectGameField(gameState);
+  const gameStatus = selectGameStatus(gameState);
 
   const handleCellClick = (index: number) => () => {
     store.dispatch({
       type: "event/game/move-completed",
       payload: {
-        index,
-        symbol: GameSymbol.CROSS,
+        gameField: updateGameCell(gameField, index, gameStatus.symbol),
+        gameStatus: getNextGameStatus(gameStatus, [
+          GameSymbol.CROSS,
+          GameSymbol.ZERO,
+          GameSymbol.TRINGLE,
+        ]),
       },
     });
   };
@@ -55,7 +62,7 @@ export function Game() {
         })}
         gameMoveInfo={
           <GameMoveInfo
-            currentMove={GameSymbol.CROSS}
+            currentMove={gameStatus.symbol}
             nextMove={GameSymbol.SQUARE}
           />
         }

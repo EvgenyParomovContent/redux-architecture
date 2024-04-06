@@ -13,7 +13,7 @@ export const MOVE_ORDER = [
 
 export function getNextGameStatus(
   { symbol }: GameStatus,
-  symbolsInGame = MOVE_ORDER,
+  symbolsInGame: readonly GameSymbol[] = MOVE_ORDER,
 ) {
   const symbols = symbolsInGame.length;
   const nextIndex =
