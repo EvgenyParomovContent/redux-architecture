@@ -1,11 +1,14 @@
 import { Game } from "@/features/game";
 import { Header } from "./header";
+import { StoreProvider } from "./providers/store-provider";
 
 export function App() {
   return (
-    <HomePageLayout header={<Header />}>
-      <Game />
-    </HomePageLayout>
+    <StoreProvider>
+      <HomePageLayout header={<Header />}>
+        <Game />
+      </HomePageLayout>
+    </StoreProvider>
   );
 }
 

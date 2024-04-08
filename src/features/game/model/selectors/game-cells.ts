@@ -1,25 +1,29 @@
-import { GameField } from "../domain/game-field";
-import { GameStatus } from "../domain/game-status";
+import { createSelector } from "@reduxjs/toolkit";
 import { GameSymbol } from "../domain/game-symbol";
+import { gameSlice } from "../../store";
 
 type GameCell = {
   symbol: GameSymbol | null;
   isWinner: boolean;
 };
 
-export function selectGameCells(gameField: GameField, gameStatus: GameStatus) {
-  if (gameStatus.type === "game-over") {
-    return gameField.map((cell, index): GameCell => {
+export const selectGameCells = createSelector(
+  gameSlice.selectors.selectGameField,
+  gameSlice.selectors.selectGameStatus,
+  (gameField, gameStatus) => {
+    if (gameStatus.type === "game-over") {
+      return gameField.map((cell, index): GameCell => {
+        return {
+          symbol: cell,
+          isWinner: gameStatus.winnerIndexes.includes(index),
+        };
+      });
+    }
+    return gameField.map((cell): GameCell => {
       return {
         symbol: cell,
-        isWinner: gameStatus.winnerIndexes.includes(index),
+        isWinner: false,
       };
     });
-  }
-  return gameField.map((cell): GameCell => {
-    return {
-      symbol: cell,
-      isWinner: false,
-    };
-  });
-}
+  },
+);

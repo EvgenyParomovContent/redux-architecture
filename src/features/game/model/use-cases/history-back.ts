@@ -1,11 +1,12 @@
-import { canBack, decrimentHistory, GameHistory } from "../domain/game-history";
-import { ModelDispatch } from "../events";
+import { AppDispatch, AppGetState } from "@/shared/store";
+import { canBack, decrimentHistory } from "../domain/game-history";
+import { gameSlice } from "../../store";
+import { historyViewedEvent } from "../events";
 
-export function historyBack(history: GameHistory, dispatch: ModelDispatch) {
-  if (canBack(history)) {
-    dispatch({
-      type: "event/game/history-viewed",
-      payload: decrimentHistory(history),
-    });
-  }
-}
+export const historyBack =
+  () => (dispatch: AppDispatch, getState: AppGetState) => {
+    const history = gameSlice.selectors.selectGameHistory(getState());
+    if (canBack(history)) {
+      dispatch(historyViewedEvent(decrimentHistory(history)));
+    }
+  };

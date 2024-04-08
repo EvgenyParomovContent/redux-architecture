@@ -1,27 +1,26 @@
+import { AppDispatch, AppGetState } from "@/shared/store";
 import {
   canForward,
   currentIndexIsLast,
-  GameHistory,
   incrementHistory,
 } from "../domain/game-history";
-import { ModelDispatch } from "../events";
+import { gameSlice } from "../../store";
+import { gameViewedEvent, historyViewedEvent } from "../events";
 
-export function historyForward(history: GameHistory, dispatch: ModelDispatch) {
-  if (!canForward(history)) {
-    return;
-  }
+export const historyForward =
+  () => (dispatch: AppDispatch, getState: AppGetState) => {
+    const history = gameSlice.selectors.selectGameHistory(getState());
 
-  const incrementedHistory = incrementHistory(history);
+    if (!canForward(history)) {
+      return;
+    }
 
-  if (currentIndexIsLast(incrementedHistory)) {
-    dispatch({
-      type: "event/game/game-viewed",
-    });
-    return;
-  }
+    const incrementedHistory = incrementHistory(history);
 
-  dispatch({
-    type: "event/game/history-viewed",
-    payload: incrementedHistory,
-  });
-}
+    if (currentIndexIsLast(incrementedHistory)) {
+      dispatch(gameViewedEvent());
+      return;
+    }
+
+    dispatch(historyViewedEvent(incrementedHistory));
+  };

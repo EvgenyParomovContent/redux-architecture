@@ -1,9 +1,13 @@
-import { legacy_createStore } from "redux";
-import { composeWithDevTools } from "@redux-devtools/extension";
-
-import { ModelEvents } from "./model/events";
+import {
+  gameOverEvent,
+  gameViewedEvent,
+  historyViewedEvent,
+  moveCompletedEvent,
+} from "./model/events";
 import { GameStatus, getInitialGameStatus } from "./model/domain/game-status";
 import { createEmptyGameField, GameField } from "./model/domain/game-field";
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { slicesRegistry } from "@/shared/store";
 import { GameHistory } from "./model/domain/game-history";
 
 // State
@@ -15,8 +19,6 @@ type GameState = {
   activeIndex: number;
 };
 
-// Reducer
-
 const initialState: GameState = {
   history: [
     {
@@ -27,51 +29,40 @@ const initialState: GameState = {
   activeIndex: 0,
 };
 
-const gameReducer = (state = initialState, action: ModelEvents): GameState => {
-  switch (action.type) {
-    case "event/game/over":
-    case "event/game/move-completed": {
+export const gameSlice = createSlice({
+  name: "features/game",
+  initialState,
+  reducers: {},
+  selectors: {
+    selectGameField: (state): GameField =>
+      state.history[state.activeIndex].gameField,
+    selectGameStatus: (state): GameStatus =>
+      state.history[state.activeIndex].gameStatus,
+    selectGameHistory: (state): GameHistory => {
       return {
-        ...state,
-        history: state.history.concat([
-          {
-            gameField: action.payload.gameField,
-            gameStatus: action.payload.gameStatus,
-          },
-        ]),
-        activeIndex: state.activeIndex + 1,
+        currentIndex: state.activeIndex,
+        lastIndex: state.history.length - 1,
       };
-    }
-    case "event/game/history-viewed": {
-      return {
-        ...state,
-        activeIndex: action.payload.currentIndex,
-      };
-    }
-    case "event/game/game-viewed": {
-      return {
-        ...state,
-        activeIndex: state.history.length - 1,
-      };
-    }
-    default:
-      return state;
-  }
-};
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(historyViewedEvent, (state, action) => {
+      state.activeIndex = action.payload.currentIndex;
+    });
+    builder.addCase(gameViewedEvent, (state) => {
+      state.activeIndex = state.history.length - 1;
+    });
+    builder.addMatcher(
+      isAnyOf(moveCompletedEvent, gameOverEvent),
+      (state, action) => {
+        state.history.push({
+          gameField: action.payload.gameField,
+          gameStatus: action.payload.gameStatus,
+        });
+        state.activeIndex++;
+      },
+    );
+  },
+});
 
-// Selectors
-export const selectGameField = (gameState: GameState) =>
-  gameState.history[gameState.activeIndex].gameField;
-
-export const selectGameStatus = (gameState: GameState) =>
-  gameState.history[gameState.activeIndex].gameStatus;
-
-export const selectGameHistory = (gameState: GameState): GameHistory => {
-  return {
-    currentIndex: gameState.activeIndex,
-    lastIndex: gameState.history.length - 1,
-  };
-};
-
-// Store
-export const store = legacy_createStore(gameReducer, composeWithDevTools());
+slicesRegistry.inject(gameSlice);

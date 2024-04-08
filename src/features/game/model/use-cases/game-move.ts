@@ -1,67 +1,59 @@
+import { AppDispatch, AppGetState } from "@/shared/store";
 import {
   computeWinner,
-  GameField,
   getFieldCell,
   updateGameCell,
 } from "../domain/game-field";
-import { currentIndexIsLast, GameHistory } from "../domain/game-history";
-import { GameStatus, getNextGameSymbol } from "../domain/game-status";
-import { ModelDispatch } from "../events";
+import { currentIndexIsLast } from "../domain/game-history";
+import { getNextGameSymbol } from "../domain/game-status";
+import { gameSlice } from "../../store";
+import { gameOverEvent, moveCompletedEvent } from "../events";
 
-export function gameMove(
-  index: number,
-  dispatch: ModelDispatch,
-  state: {
-    history: GameHistory;
-    gameField: GameField;
-    gameStatus: GameStatus;
-  },
-) {
-  if (!currentIndexIsLast(state.history)) {
-    return;
-  }
+export const gameMove =
+  (index: number) => (dispatch: AppDispatch, getState: AppGetState) => {
+    const history = gameSlice.selectors.selectGameHistory(getState());
+    const gameStatus = gameSlice.selectors.selectGameStatus(getState());
+    const gameField = gameSlice.selectors.selectGameField(getState());
 
-  if (state.gameStatus.type === "game-over") {
-    return;
-  }
+    if (!currentIndexIsLast(history)) {
+      return;
+    }
 
-  const cell = getFieldCell(state.gameField, index);
+    if (gameStatus.type === "game-over") {
+      return;
+    }
 
-  if (cell !== null) {
-    return;
-  }
+    const cell = getFieldCell(gameField, index);
 
-  const nextField = updateGameCell(
-    state.gameField,
-    index,
-    state.gameStatus.symbol,
-  );
+    if (cell !== null) {
+      return;
+    }
 
-  const winnerIndexes = computeWinner(nextField);
+    const nextField = updateGameCell(gameField, index, gameStatus.symbol);
 
-  if (winnerIndexes) {
-    dispatch({
-      type: "event/game/over",
-      payload: {
+    const winnerIndexes = computeWinner(nextField);
+
+    if (winnerIndexes) {
+      dispatch(
+        gameOverEvent({
+          gameField: nextField,
+          gameStatus: {
+            type: "game-over",
+            winner: gameStatus.symbol,
+            winnerIndexes: winnerIndexes,
+          },
+        }),
+      );
+      return;
+    }
+
+    dispatch(
+      moveCompletedEvent({
         gameField: nextField,
         gameStatus: {
-          type: "game-over",
-          winner: state.gameStatus.symbol,
-          winnerIndexes: winnerIndexes,
+          type: "in-progress",
+          symbol: getNextGameSymbol(gameStatus.symbol),
         },
-      },
-    });
-    return;
-  }
-
-  dispatch({
-    type: "event/game/move-completed",
-    payload: {
-      gameField: nextField,
-      gameStatus: {
-        type: "in-progress",
-        symbol: getNextGameSymbol(state.gameStatus.symbol),
-      },
-    },
-  });
-}
+      }),
+    );
+  };

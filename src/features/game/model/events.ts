@@ -1,36 +1,19 @@
+import { createAction } from "@reduxjs/toolkit";
 import { GameField } from "./domain/game-field";
 import { GameHistory } from "./domain/game-history";
 import { GameStatusGameOver, GameStatusInProgress } from "./domain/game-status";
 
-type MoveCompletedEvent = {
-  type: "event/game/move-completed";
-  payload: {
-    gameField: GameField;
-    gameStatus: GameStatusInProgress;
-  };
-};
+export const moveCompletedEvent = createAction<{
+  gameField: GameField;
+  gameStatus: GameStatusInProgress;
+}>("event/game/move-completed");
 
-type GameOverEvent = {
-  type: "event/game/over";
-  payload: {
-    gameField: GameField;
-    gameStatus: GameStatusGameOver;
-  };
-};
+export const gameOverEvent = createAction<{
+  gameField: GameField;
+  gameStatus: GameStatusGameOver;
+}>("event/game/over");
 
-type HistoryViewed = {
-  type: "event/game/history-viewed";
-  payload: GameHistory;
-};
-
-type GameViewed = {
-  type: "event/game/game-viewed";
-};
-
-export type ModelEvents =
-  | MoveCompletedEvent
-  | GameOverEvent
-  | HistoryViewed
-  | GameViewed;
-
-export type ModelDispatch = (event: ModelEvents) => void;
+export const historyViewedEvent = createAction<GameHistory>(
+  "event/game/history-viewed",
+);
+export const gameViewedEvent = createAction("event/game/game-viewed");
