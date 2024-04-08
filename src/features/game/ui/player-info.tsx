@@ -2,6 +2,9 @@ import { GameSymbolView } from "./game-symbol";
 import clsx from "clsx";
 import { GameSymbol } from "../model/domain/game-symbol";
 import { useNow } from "@/shared/lib/timers";
+import { useAppSelector } from "@/shared/store";
+import { selectGameTimers } from "../model/selectors/game-timers";
+import { selectTimerEnabled } from "../model/selectors/timer-enabled";
 
 export function PlayerInfo({
   isRight = false,
@@ -16,10 +19,13 @@ export function PlayerInfo({
   avatar: string;
   symbol: GameSymbol;
 }) {
-  const isTimerEnabled = false;
+  const isTimerEnabled = useAppSelector((state) =>
+    selectTimerEnabled(state, { symbol }),
+  );
   const now = useNow(1000, isTimerEnabled);
+  const timers = useAppSelector((state) => selectGameTimers(state, { now }));
 
-  const mils = now ?? Date.now();
+  const mils = timers[symbol];
   const seconds = Math.ceil(mils / 1000);
   const minutesString = String(Math.floor(seconds / 60)).padStart(2, "0");
   const secondsString = String(seconds % 60).padStart(2, "0");
