@@ -9,20 +9,17 @@ export function PlayerInfo({
   rating,
   avatar,
   symbol,
-  timer,
-  timerStartAt,
 }: {
   isRight?: boolean;
   name: string;
   rating: number;
   avatar: string;
   symbol: GameSymbol;
-  timer: number;
-  timerStartAt?: number;
 }) {
-  const now = useNow(1000, !!timerStartAt);
-  timerStartAt = timerStartAt ?? 0;
-  const mils = Math.max(now ? timer - (now - timerStartAt) : timer, 0);
+  const isTimerEnabled = false;
+  const now = useNow(1000, isTimerEnabled);
+
+  const mils = now ?? Date.now();
   const seconds = Math.ceil(mils / 1000);
   const minutesString = String(Math.floor(seconds / 60)).padStart(2, "0");
   const secondsString = String(seconds % 60).padStart(2, "0");
@@ -30,7 +27,7 @@ export function PlayerInfo({
   const isDanger = seconds < 10;
 
   const getTimerColor = () => {
-    if (timerStartAt) {
+    if (isTimerEnabled) {
       return isDanger ? "text-orange-600" : "text-slate-900";
     }
     return "text-slate-200";

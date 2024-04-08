@@ -66,7 +66,6 @@ export function Game() {
               name={player.name}
               rating={player.rating}
               symbol={player.symbol}
-              timer={60}
             />
           );
         })}
